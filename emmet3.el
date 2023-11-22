@@ -37,22 +37,20 @@ Show the result in auto-completion popup."
     (if (nth 3 (syntax-ppss))  ; inside string
         nil
       (let ((end (point))
+            (beg (emmet-find-left-bound))
             (collection (list (emmet3--at-point))))
-        (search-backward " " nil 'noerror)
-        (list (1+ (point)) end
-              collection
-              :company-kind (lambda (_) 'string))))))
+        (and
+         collection
+         (list beg end
+               collection
+               :company-kind (lambda (_) 'string)
+               ;; :exit-function (lambda (_ st) (and (eq st 'finished)
+               ;;                                    (emmet-expand-line 0)))
+               ))))))
 
 (defun emmet3--at-point ()
   "Return a string which is an expansion of an Emmet markup at the cursor."
-  (let ((start (point)))
-    (save-excursion
-      (thread-first
-        (search-backward " " nil 'noerror)
-        (or 0)
-        1+
-        (buffer-substring start)
-        emmet-transform))))
+  (emmet-transform (buffer-substring-no-properties (point) (emmet-find-left-bound))))
 
 (provide 'emmet3)
 ;;; emmet3.el ends here
