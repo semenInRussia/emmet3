@@ -28,8 +28,6 @@
 
 (require 'emmet-mode)
 
-(add-hook 'completion-at-point-functions 'emmet3-capf nil t)
-
 (defun emmet3-capf ()
   "The completion at point function for Emmet expansion.
 
