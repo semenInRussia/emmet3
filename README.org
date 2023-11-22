@@ -1,0 +1,31 @@
+* Emmet3: for emacs
+
+This is a simple package for ~emacs~ which enable a autocompletion for ~emmet-mode~.  I tested it for corfu and it works.  If you are you an user of ~corfu~ then just use the function ~emmet3-capf~.  In my config it looks like the following
+
+#+BEGIN_SRC elisp
+
+  (defun my-enable-emmet3 ()
+    "Enable emmet3: autocompletion for Emmet."
+    (interactive)
+    (add-hook 'completion-at-point-functions #'emmet3-capf 5 'local))
+
+#+END_SRC
+
+If you are user of ~company~, then u should use anything like the following:
+
+#+BEGIN_SRC elisp
+(defvar company-enable-emmet3 t
+  "Enable emmet3 for all backends.")
+
+(defun company-backend-with-emmet3 (backend)
+  (if (or (not company-enable-emmet3) (and (listp backend) (member 'company-capf backend)))
+      backend
+    (append (if (consp backend) backend (list backend))
+            (list :with 'company-capf))))
+
+(defun my-enable-emmet3 ()
+  (add-hook 'completion-at-point-functions 'emmet3-capf)
+  (setq-local company-backends (mapcar #'company-backend-with-emmet3 company-backends)))
+
+(add-hook 'html-mode-hook 'my-enable-emmet3)
+#+END_SRC
